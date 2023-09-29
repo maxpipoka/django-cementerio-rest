@@ -10,4 +10,5 @@ urlpatterns = [
     # path('taxpayers2/', views.TaxpayerApiView.as_view()),
     path('taxpayers/', views.getTaxpayers),
     path('taxpayers/add', views.addTaxpayer),
+    path('taxpayers/<int:id>', views.getOneTaxpayer)
 ]
