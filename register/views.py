@@ -79,128 +79,135 @@ def isDatePast(date_to_check=date) -> bool:
 
 # Create your views here.
 
+class TaxpayerViewset(viewsets.ModelViewSet):
+    queryset = Taxpayer.objects.all()
+    serializer_class = TaxpayerSerializer
 
+
+
+
+### Start functional code
 # Endpoint to get all the Taxpayers
-@api_view(['GET'])
-def getTaxpayers(request):
-    try:
-        taxpayers = Taxpayer.objects.all().order_by('id')
-    except:
-        return Response({'message': 'No se pudo acceder a los Contribuyentes'}, 
-                        status=status.HTTP_204_NO_CONTENT)
+# @api_view(['GET'])
+# def getTaxpayers(request):
+#     try:
+#         taxpayers = Taxpayer.objects.all().order_by('id')
+#     except:
+#         return Response({'message': 'No se pudo acceder a los Contribuyentes'}, 
+#                         status=status.HTTP_204_NO_CONTENT)
 
-    serializer = TaxpayerSerializer(taxpayers, many=True)
+#     serializer = TaxpayerSerializer(taxpayers, many=True)
 
-    return Response(serializer.data)
+#     return Response(serializer.data)
 
 
-#Endpoint to get one taxpayer by id
-@api_view(['GET'])
-def getOneTaxpayer(request, id):
+# #Endpoint to get one taxpayer by id
+# @api_view(['GET'])
+# def getOneTaxpayer(request, id):
 
-    if not id:
-        return Response({'message':'No se obtuvo un id a buscar'},
-                        status=status.HTTP_400_BAD_REQUEST)
+#     if not id:
+#         return Response({'message':'No se obtuvo un id a buscar'},
+#                         status=status.HTTP_400_BAD_REQUEST)
     
-    if (id):
-        try:
-            return Response(Taxpayer.objects.find(id == id),
-                            status=status.HTTP_200_OK)
+#     if (id):
+#         try:
+#             return Response(Taxpayer.objects.find(id == id),
+#                             status=status.HTTP_200_OK)
         
-        except:
-            return Response({'message':'Contribuyente no encontrado'},
-                            status=status.HTTP_400_BAD_REQUEST)
+#         except:
+#             return Response({'message':'Contribuyente no encontrado'},
+#                             status=status.HTTP_400_BAD_REQUEST)
         
 
 
 
-# Endpoint to save a new Taxpayer
-@api_view(['POST'])
-def addTaxpayer(request):
-    serializer = TaxpayerSerializer(data=request.data)
+# # Endpoint to save a new Taxpayer
+# @api_view(['POST'])
+# def addTaxpayer(request):
+#     serializer = TaxpayerSerializer(data=request.data)
 
-    if serializer.is_valid():
-        if (isValueExistInDb(Taxpayer, {'dni': int(serializer.data['dni'])})):
-            return Response({'message': 'Ya se encuentra el DNI en la base de datos'}, 
-                            status=status.HTTP_400_BAD_REQUEST)
+#     if serializer.is_valid():
+#         if (isValueExistInDb(Taxpayer, {'dni': int(serializer.data['dni'])})):
+#             return Response({'message': 'Ya se encuentra el DNI en la base de datos'}, 
+#                             status=status.HTTP_400_BAD_REQUEST)
 
-        if (isValueExistInDb(Taxpayer, {'code': int(serializer.data['code'])})):
-            return Response({'message': 'Ya se encuentra el Código en la base de datos'}, 
-                            status=status.HTTP_400_BAD_REQUEST)
+#         if (isValueExistInDb(Taxpayer, {'code': int(serializer.data['code'])})):
+#             return Response({'message': 'Ya se encuentra el Código en la base de datos'}, 
+#                             status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            serializer.save()
-            return Response(serializer.data)
-        except:
-            return Response({'message': 'Error saving'}, status=status.HTTP_400_BAD_REQUEST)
+#         try:
+#             serializer.save()
+#             return Response(serializer.data)
+#         except:
+#             return Response({'message': 'Error saving'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Endpoint to edit a Taxpayer
-@api_view(['PATCH'])
-def editTaxpayer(request):
-    serializer = TaxpayerSerializer(data=request.data)
+# # Endpoint to edit a Taxpayer
+# @api_view(['PATCH'])
+# def editTaxpayer(request):
+#     serializer = TaxpayerSerializer(data=request.data)
 
-    if serializer.is_valid():
-        try:
-            taxpayerToEdit = Taxpayer.objects.filter(
-                id == serializer.data['id'])
-        except:
-            return Response({'message': 'No se encuentra el contribuyente solicitado.', }, 
-                            status=status.HTTP_400_BAD_REQUEST)
+#     if serializer.is_valid():
+#         try:
+#             taxpayerToEdit = Taxpayer.objects.filter(
+#                 id == serializer.data['id'])
+#         except:
+#             return Response({'message': 'No se encuentra el contribuyente solicitado.', }, 
+#                             status=status.HTTP_400_BAD_REQUEST)
         
-        try:
-            if serializer.data['name']:
-                taxpayerToEdit.name = serializer.data['name']
+#         try:
+#             if serializer.data['name']:
+#                 taxpayerToEdit.name = serializer.data['name']
             
-            if serializer.data['adress']:
-                taxpayerToEdit.adress = serializer.data['adress']
+#             if serializer.data['adress']:
+#                 taxpayerToEdit.adress = serializer.data['adress']
 
-            if serializer.data['city_adress']:
-                taxpayerToEdit.city_adress = serializer.data['city_adress']
+#             if serializer.data['city_adress']:
+#                 taxpayerToEdit.city_adress = serializer.data['city_adress']
 
-        except:
-            return Response({'message': 'Error al editar el contribuyente'}, 
-                            status=status.HTTP_400_BAD_REQUEST)
+#         except:
+#             return Response({'message': 'Error al editar el contribuyente'}, 
+#                             status=status.HTTP_400_BAD_REQUEST)
         
 
-        try:
-            serializer.save()
-            return Response({'message': 'Se han guardado los cambios en el contribuyente'},
-                            status=status.HTTP_202_ACCEPTED)
+#         try:
+#             serializer.save()
+#             return Response({'message': 'Se han guardado los cambios en el contribuyente'},
+#                             status=status.HTTP_202_ACCEPTED)
         
-        except:
-            return Response({'message': 'Error al editar el contribuyente'},
-                            status=status.HTTP_400_BAD_REQUEST)
+#         except:
+#             return Response({'message': 'Error al editar el contribuyente'},
+#                             status=status.HTTP_400_BAD_REQUEST)
         
     
-#Endpoint to delete a taxpayer
-@api_view(['DELETE'])
-def deleteTaxpayer(request):
-    serializer = TaxpayerSerializer(data=request.data)
+# #Endpoint to delete a taxpayer
+# @api_view(['DELETE'])
+# def deleteTaxpayer(request):
+#     serializer = TaxpayerSerializer(data=request.data)
 
-    if serializer.is_valid():
-        try:
-            taxpayerToDelete = Taxpayer.objects.filter(id == serializer.data['id'])
-        except:
-            return Response({'message':'No se encuentra el contribuyente a borrar'},
-                            status=status.HTTP_400_BAD_REQUEST)
+#     if serializer.is_valid():
+#         try:
+#             taxpayerToDelete = Taxpayer.objects.filter(id == serializer.data['id'])
+#         except:
+#             return Response({'message':'No se encuentra el contribuyente a borrar'},
+#                             status=status.HTTP_400_BAD_REQUEST)
         
-        if not taxpayerToDelete:
-            return Response({'message':'Error, no hay contribuyente para borrar.'},
-                                status=status.HTTP_400_BAD_REQUEST)
+#         if not taxpayerToDelete:
+#             return Response({'message':'Error, no hay contribuyente para borrar.'},
+#                                 status=status.HTTP_400_BAD_REQUEST)
         
-        if taxpayerToDelete:
-            try:
-                taxpayerToDelete.delete()
-                Response({'message':'Contribuyente borrado'},
-                            status=status.HTTP_200_OK)
+#         if taxpayerToDelete:
+#             try:
+#                 taxpayerToDelete.delete()
+#                 Response({'message':'Contribuyente borrado'},
+#                             status=status.HTTP_200_OK)
             
-            except:
-                return Response({'message':'Error al borrar el contribuyente'}, 
-                                status=status.HTTP_400_BAD_REQUEST)
+#             except:
+#                 return Response({'message':'Error al borrar el contribuyente'}, 
+#                                 status=status.HTTP_400_BAD_REQUEST)
             
 
-
+### End functional code
 
 # class TaxpayerViewSet(viewsets.ReadOnlyModelViewSet):
 #     """
