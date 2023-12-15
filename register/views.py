@@ -2,10 +2,34 @@ from datetime import date
 from json import JSONDecodeError
 
 from django.http import JsonResponse
-from .models import Taxpayer
+from .models import ( Taxpayer, 
+                    Deceased, 
+                    State, 
+                    County, 
+                    City, 
+                    RegistrationOffice, 
+                    BurialPermit, 
+                    Sector, 
+                    Periodicity, 
+                    Parcel, 
+                    Grave, 
+                    Tax, 
+                    Payment)
 from rest_framework import viewsets, views, status
 from rest_framework import permissions
-from .serializers import TaxpayerSerializer
+from .serializers import ( TaxpayerSerializer, 
+                          DeceasedSerializer, 
+                          StateSerializer, 
+                          CountySerializer, 
+                          CitySerializer, 
+                          RegistrationOfficeSerializer, 
+                          BurialPermitSerializer, 
+                          SectorSerializer, 
+                          PeriodicitySerializer, 
+                          ParcelSerializer, 
+                          GraveSerializer, 
+                          TaxSerializer, 
+                          PaymentSerializer)
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -84,7 +108,63 @@ class TaxpayerViewset(viewsets.ModelViewSet):
     serializer_class = TaxpayerSerializer
 
 
+class DeceasedViewset(viewsets.ModelViewSet):
+    queryset = Deceased.objects.all()
+    serializer_class = DeceasedSerializer
 
+
+class StateViewset(viewsets.ModelViewSet):
+    queryset = State.objects.all()
+    serializer_class = StateSerializer
+
+
+class CountyViewset(viewsets.ModelViewSet):
+    queryset = County.objects.all()
+    serializer_class = CountySerializer
+
+
+class CityViewset(viewsets.ModelViewSet):
+    queryset = City.objects.all()
+    serializer_class = CitySerializer
+
+class RegistrationOfficeViewset(viewsets.ModelViewSet):
+    queryset = RegistrationOffice.objects.all()
+    serializer_class = RegistrationOfficeSerializer
+
+
+class BurialPermitViewset(viewsets.ModelViewSet):
+    queryset = BurialPermit.objects.all()
+    serializer_class = BurialPermitSerializer
+
+
+class SectorViewset(viewsets.ModelViewSet):
+    queryset = Sector.objects.all()
+    serializer_class = SectorSerializer
+
+
+class PeriodicityViewset(viewsets.ModelViewSet):
+    queryset = Periodicity.objects.all()
+    serializer_class = PeriodicitySerializer
+
+
+class ParcelViewset(viewsets.ModelViewSet):
+    queryset = Parcel.objects.all()
+    serializer_class = ParcelSerializer
+
+
+class GraveViewset(viewsets.ModelViewSet):
+    queryset = Grave.objects.all()
+    serializer_class = GraveSerializer
+
+
+class TaxViewset(viewsets.ModelViewSet):
+    queryset = Tax.objects.all()
+    serializer_class = TaxSerializer
+
+
+class PaymentViewset(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
 
 ### Start functional code
 # Endpoint to get all the Taxpayers
