@@ -34,7 +34,7 @@ SECRET_KEY = os.environ.get(
 # DEBUG = env('DEBUG')
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['mcdev-cementerio.fly.dev', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
 
 
 # Application definition
