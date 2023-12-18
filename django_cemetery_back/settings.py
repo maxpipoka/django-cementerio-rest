@@ -105,19 +105,19 @@ DATABASES = {
         'USER': os.environ.get('DB_USER'),
         # 'PASSWORD': env('DB_PASSWORD'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'ssl': {
-                # 'ssl-ca': env('MYSQL_ATTR_SSL_CA')
-                'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')
-            }}
+        # 'OPTIONS': {
+        #     'charset': 'utf8mb4',
+        #     'ssl': {
+        #         # 'ssl-ca': env('MYSQL_ATTR_SSL_CA')
+        #         'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')
+        #     }}
     }
 }
 
 DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
 del DATABASES['default']['OPTIONS']['sslmode'] 
-DATABASES['default']['OPTIONS']['ssl'] =  {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
+DATABASES['default']['OPTIONS']['ssl'] =  {'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
 
 # Password validation
