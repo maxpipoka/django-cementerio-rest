@@ -7,9 +7,9 @@ class Taxpayer(models.Model):
     code = models.IntegerField('Código', blank=False,)
     name = models.CharField('Nombre', max_length=100, blank=False, null=False)
     dni = models.IntegerField('DNI', blank=False, null=False)
-    adress = models.CharField(
+    address = models.CharField(
         'Dirección', max_length=150, blank=False, null=False)
-    city_adress = models.CharField(
+    city_address = models.CharField(
         'Localidad', max_length=50, blank=False, null=False)
 
     class Meta:

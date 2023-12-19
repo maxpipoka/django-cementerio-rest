@@ -5,7 +5,7 @@ from .models import BurialPermit, City, County, Grave, Parcel, Payment, Periodic
 
 @admin.register(Taxpayer)
 class TaxpayerAdmin(admin.ModelAdmin):
-    list_display = ['code', 'name', 'dni', 'adress', 'city_adress']
+    list_display = ['code', 'name', 'dni', 'address', 'city_address']
     search_fields = ('name', 'dni')
     readonly_fields = ['code', 'dni']
 
