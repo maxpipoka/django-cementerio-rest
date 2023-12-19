@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import environ
 import os
 from pathlib import Path
+import dj_database_url
 
 env = environ.Env()
 
@@ -34,7 +35,7 @@ SECRET_KEY = os.environ.get(
 # DEBUG = env('DEBUG')
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['mcdev-cementerio.fly.dev', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
 
 
 # Application definition
@@ -104,14 +105,19 @@ DATABASES = {
         'USER': os.environ.get('DB_USER'),
         # 'PASSWORD': env('DB_PASSWORD'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-            'ssl': {
-                # 'ssl-ca': env('MYSQL_ATTR_SSL_CA')
-                'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')
-            }}
+        # 'OPTIONS': {
+        #     'charset': 'utf8mb4',
+        #     'ssl': {
+        #         # 'ssl-ca': env('MYSQL_ATTR_SSL_CA')
+        #         'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')
+        #     }}
     }
 }
+
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
+del DATABASES['default']['OPTIONS']['sslmode'] 
+DATABASES['default']['OPTIONS']['ssl'] =  {'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
 
 # Password validation
@@ -150,7 +156,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles_build' / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

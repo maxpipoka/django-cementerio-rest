@@ -56,13 +56,14 @@ class State(models.Model):
     country = models.CharField(
         'País', blank=False, max_length=50, choices=COUNTRIES, default='ARGENTINA')
 
-    def __str__(self):
-        return self.name + ' - ' + self.country
-
     class Meta:
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
         ordering = ['name']
+    
+    def __str__(self):
+        return self.name + ' - ' + self.country
+
 
 
 
