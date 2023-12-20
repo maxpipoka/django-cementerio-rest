@@ -12,7 +12,7 @@ class Taxpayer(models.Model):
         'Dirección', max_length=150, blank=False, null=False)
     city_address = models.CharField(
         'Localidad', max_length=50, blank=False, null=False)
-    createdAt = models.DateTimeField(default = datetime.datetime.now() )
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -37,7 +37,7 @@ class Deceased(models.Model):
         'Fecha de Fallecimiento', auto_now_add=False, blank=False, null=False)
     is_child = models.CharField('Menor', max_length=1, blank=False,
                                 null=False, choices=TRUEFALSE, default='N')
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -62,7 +62,7 @@ class State(models.Model):
         'Nombre Provincia', blank=False, max_length=50, null=False)
     country = models.CharField(
         'País', blank=False, max_length=50, choices=COUNTRIES, default='ARGENTINA')
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -83,7 +83,7 @@ class County(models.Model):
         'Nombre Departamento/Partido', blank=False, max_length=50, null=False)
     state = models.ForeignKey(
         State, on_delete=models.PROTECT, default='1')
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -102,7 +102,7 @@ class City(models.Model):
     name = models.CharField(
         'Nombre Ciudad', blank=False, max_length=50, null=False)
     county = models.ForeignKey(County, on_delete=models.PROTECT, default='1')
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -121,7 +121,7 @@ class RegistrationOffice(models.Model):
         'Oficina del Registro', max_length=100, blank=False, null=False)
     registration_city = models.ForeignKey(
         City, on_delete=models.PROTECT, verbose_name='Ciudad')
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -148,7 +148,7 @@ class BurialPermit(models.Model):
     observations = models.TextField('Observaciones', blank=True, null=True)
     documents = models.FileField(
         verbose_name='Documentos', upload_to='burialpermits/', blank=True, null=True)
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -173,7 +173,7 @@ class Sector(models.Model):
         'Nombre', blank=False, max_length=12, null=False)
     zone = models.CharField(
         'Zona', blank=False, max_length=12, null=False, choices=ZONES)
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -211,7 +211,7 @@ class Periodicity(models.Model):
     name = models.CharField('Nombre', max_length=10, blank=False,
                             null=False, choices=PERIODICIDAD)
     years_amount = models.IntegerField('Años', blank=False, null=False)
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -229,7 +229,7 @@ class Parcel(models.Model):
     row = models.CharField('Fila', max_length=2, blank=False, null=False)
     sector = models.ForeignKey(Sector, on_delete=models.PROTECT)
     # zone = models.ForeignKey(Zone, on_delete=models.PROTECT)
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -245,7 +245,7 @@ class Parcel(models.Model):
 class Grave(models.Model):
     parcel = JSONField()
     deceased = JSONField(verbose_name='Fallecido/s')
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -278,7 +278,7 @@ class Tax(models.Model):
         'Fecha Desde', auto_now_add=False, blank=False, null=False)
     date_until = models.DateField(
         'Fecha Hasta', auto_now_add=False, blank=True, null=True)
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 
@@ -304,7 +304,7 @@ class Payment(models.Model):
         'Obs 1', max_length=200, blank=False, null=False)
     observations2 = models.CharField(
         'Obs 2', max_length=100, blank=False, null=False)
-    createdAt = models.DateTimeField(default = datetime.datetime.now())
+    createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(null=True)
     active = models.BooleanField(default=True)
 

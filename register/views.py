@@ -106,6 +106,29 @@ def isDatePast(date_to_check=date) -> bool:
 class TaxpayerViewset(viewsets.ModelViewSet):
     queryset = Taxpayer.objects.all()
     serializer_class = TaxpayerSerializer
+    
+    def create(self, request, *args, **kwargs):
+        # Lógica personalizada para el método POST (Crear)
+        serializer = self.get_serializer(data=request.data)
+
+
+        if serializer.is_valid():
+
+            if isValueExistInDb(Taxpayer, {'dni': int(serializer.validated_data['dni'])}):
+                message = {'message':'El dni ya se encuentra registrado'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            
+            if isValueExistInDb(Taxpayer, {'code': int(serializer.validated_data['code'])}):
+                message = {'message':'El código ya se encuentra registrado'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            
+            if checkMinimunLength(5, serializer.validated_data['name']):
+                message = {'message':'El nombre no tiene al menos 5 caracteres'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DeceasedViewset(viewsets.ModelViewSet):
