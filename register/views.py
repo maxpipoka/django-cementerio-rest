@@ -2,33 +2,33 @@ from datetime import date
 from json import JSONDecodeError
 
 from django.http import JsonResponse
-from .models import ( Taxpayer, 
-                    Deceased, 
-                    State, 
-                    County, 
-                    City, 
-                    RegistrationOffice, 
-                    BurialPermit, 
-                    Sector, 
-                    Periodicity, 
-                    Parcel, 
-                    Grave, 
-                    Tax, 
-                    Payment)
+from .models import (Taxpayer,
+                     Deceased,
+                     State,
+                     County,
+                     City,
+                     RegistrationOffice,
+                     BurialPermit,
+                     Sector,
+                     Periodicity,
+                     Parcel,
+                     Grave,
+                     Tax,
+                     Payment)
 from rest_framework import viewsets, views, status
 from rest_framework import permissions
-from .serializers import ( TaxpayerSerializer, 
-                          DeceasedSerializer, 
-                          StateSerializer, 
-                          CountySerializer, 
-                          CitySerializer, 
-                          RegistrationOfficeSerializer, 
-                          BurialPermitSerializer, 
-                          SectorSerializer, 
-                          PeriodicitySerializer, 
-                          ParcelSerializer, 
-                          GraveSerializer, 
-                          TaxSerializer, 
+from .serializers import (TaxpayerSerializer,
+                          DeceasedSerializer,
+                          StateSerializer,
+                          CountySerializer,
+                          CitySerializer,
+                          RegistrationOfficeSerializer,
+                          BurialPermitSerializer,
+                          SectorSerializer,
+                          PeriodicitySerializer,
+                          ParcelSerializer,
+                          GraveSerializer,
+                          TaxSerializer,
                           PaymentSerializer)
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
@@ -50,7 +50,7 @@ def isValueExistInDb(modelToCheck, filter_to_arg=dict) -> bool:
     return modelToCheck.objects.filter(**filter_to_arg).exists()
 
 
-def checkMaximunLength(length=int, toCheck=str) -> bool:
+def isGreaterThanMaximumLength(length=int, toCheck=str) -> bool:
     """Validate the contraint of maximun length of a value
     Args:
         length: a int value of a lengt to compare
@@ -62,7 +62,7 @@ def checkMaximunLength(length=int, toCheck=str) -> bool:
     """
 
 
-def checkMinimunLength(length=int, toCheck=str) -> bool:
+def isLessThanMinimumLength(length=int, toCheck=str) -> bool:
     """Validate the contraint of minimun length of a value
 
     Args:
@@ -103,32 +103,46 @@ def isDatePast(date_to_check=date) -> bool:
 
 # Create your views here.
 
+
 class TaxpayerViewset(viewsets.ModelViewSet):
     queryset = Taxpayer.objects.all()
     serializer_class = TaxpayerSerializer
-    
+
     def create(self, request, *args, **kwargs):
         # Lógica personalizada para el método POST (Crear)
         serializer = self.get_serializer(data=request.data)
 
-
         if serializer.is_valid():
 
             if isValueExistInDb(Taxpayer, {'dni': int(serializer.validated_data['dni'])}):
-                message = {'message':'El dni ya se encuentra registrado'}
+                message = {'message': 'El dni ya se encuentra registrado'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            
+
             if isValueExistInDb(Taxpayer, {'code': int(serializer.validated_data['code'])}):
-                message = {'message':'El código ya se encuentra registrado'}
+                message = {'message': 'El código ya se encuentra registrado'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            
-            if checkMinimunLength(5, serializer.validated_data['name']):
-                message = {'message':'El nombre no tiene al menos 5 caracteres'}
+
+            if isLessThanMinimumLength(5, serializer.validated_data['name']):
+                message = {
+                    'message': 'El nombre no tiene al menos 5 caracteres'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+            if isLessThanMinimumLength(5, serializer.validated_data['address']):
+                message = {
+                    'message': 'El nombre no tiene al menos 5 caracteres'}
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+            if isLessThanMinimumLength(5, serializer.validated_data['city_address']):
+                message = {
+                    'message': 'El nombre no tiene al menos 5 caracteres'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
 
 
 class DeceasedViewset(viewsets.ModelViewSet):
@@ -149,6 +163,7 @@ class CountyViewset(viewsets.ModelViewSet):
 class CityViewset(viewsets.ModelViewSet):
     queryset = City.objects.all()
     serializer_class = CitySerializer
+
 
 class RegistrationOfficeViewset(viewsets.ModelViewSet):
     queryset = RegistrationOffice.objects.all()
@@ -189,14 +204,14 @@ class PaymentViewset(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
 
-### Start functional code
+# Start functional code
 # Endpoint to get all the Taxpayers
 # @api_view(['GET'])
 # def getTaxpayers(request):
 #     try:
 #         taxpayers = Taxpayer.objects.all().order_by('id')
 #     except:
-#         return Response({'message': 'No se pudo acceder a los Contribuyentes'}, 
+#         return Response({'message': 'No se pudo acceder a los Contribuyentes'},
 #                         status=status.HTTP_204_NO_CONTENT)
 
 #     serializer = TaxpayerSerializer(taxpayers, many=True)
@@ -211,17 +226,15 @@ class PaymentViewset(viewsets.ModelViewSet):
 #     if not id:
 #         return Response({'message':'No se obtuvo un id a buscar'},
 #                         status=status.HTTP_400_BAD_REQUEST)
-    
+
 #     if (id):
 #         try:
 #             return Response(Taxpayer.objects.find(id == id),
 #                             status=status.HTTP_200_OK)
-        
+
 #         except:
 #             return Response({'message':'Contribuyente no encontrado'},
 #                             status=status.HTTP_400_BAD_REQUEST)
-        
-
 
 
 # # Endpoint to save a new Taxpayer
@@ -231,11 +244,11 @@ class PaymentViewset(viewsets.ModelViewSet):
 
 #     if serializer.is_valid():
 #         if (isValueExistInDb(Taxpayer, {'dni': int(serializer.data['dni'])})):
-#             return Response({'message': 'Ya se encuentra el DNI en la base de datos'}, 
+#             return Response({'message': 'Ya se encuentra el DNI en la base de datos'},
 #                             status=status.HTTP_400_BAD_REQUEST)
 
 #         if (isValueExistInDb(Taxpayer, {'code': int(serializer.data['code'])})):
-#             return Response({'message': 'Ya se encuentra el Código en la base de datos'}, 
+#             return Response({'message': 'Ya se encuentra el Código en la base de datos'},
 #                             status=status.HTTP_400_BAD_REQUEST)
 
 #         try:
@@ -255,13 +268,13 @@ class PaymentViewset(viewsets.ModelViewSet):
 #             taxpayerToEdit = Taxpayer.objects.filter(
 #                 id == serializer.data['id'])
 #         except:
-#             return Response({'message': 'No se encuentra el contribuyente solicitado.', }, 
+#             return Response({'message': 'No se encuentra el contribuyente solicitado.', },
 #                             status=status.HTTP_400_BAD_REQUEST)
-        
+
 #         try:
 #             if serializer.data['name']:
 #                 taxpayerToEdit.name = serializer.data['name']
-            
+
 #             if serializer.data['adress']:
 #                 taxpayerToEdit.adress = serializer.data['adress']
 
@@ -269,20 +282,20 @@ class PaymentViewset(viewsets.ModelViewSet):
 #                 taxpayerToEdit.city_adress = serializer.data['city_adress']
 
 #         except:
-#             return Response({'message': 'Error al editar el contribuyente'}, 
+#             return Response({'message': 'Error al editar el contribuyente'},
 #                             status=status.HTTP_400_BAD_REQUEST)
-        
+
 
 #         try:
 #             serializer.save()
 #             return Response({'message': 'Se han guardado los cambios en el contribuyente'},
 #                             status=status.HTTP_202_ACCEPTED)
-        
+
 #         except:
 #             return Response({'message': 'Error al editar el contribuyente'},
 #                             status=status.HTTP_400_BAD_REQUEST)
-        
-    
+
+
 # #Endpoint to delete a taxpayer
 # @api_view(['DELETE'])
 # def deleteTaxpayer(request):
@@ -294,23 +307,23 @@ class PaymentViewset(viewsets.ModelViewSet):
 #         except:
 #             return Response({'message':'No se encuentra el contribuyente a borrar'},
 #                             status=status.HTTP_400_BAD_REQUEST)
-        
+
 #         if not taxpayerToDelete:
 #             return Response({'message':'Error, no hay contribuyente para borrar.'},
 #                                 status=status.HTTP_400_BAD_REQUEST)
-        
+
 #         if taxpayerToDelete:
 #             try:
 #                 taxpayerToDelete.delete()
 #                 Response({'message':'Contribuyente borrado'},
 #                             status=status.HTTP_200_OK)
-            
-#             except:
-#                 return Response({'message':'Error al borrar el contribuyente'}, 
-#                                 status=status.HTTP_400_BAD_REQUEST)
-            
 
-### End functional code
+#             except:
+#                 return Response({'message':'Error al borrar el contribuyente'},
+#                                 status=status.HTTP_400_BAD_REQUEST)
+
+
+# End functional code
 
 # class TaxpayerViewSet(viewsets.ReadOnlyModelViewSet):
 #     """
