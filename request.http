@@ -13,3 +13,16 @@ Content-Type: application/json
     "address":"La esquina de la casa de Martin",
     "city_address":"SAN JOSE, MISIONES"
 }
+
+### Delete 'deactive' taxpayer
+
+DELETE http://127.0.0.1:8000/api/v1/taxpayer/2/
+
+### Activate taxpayer
+
+PATCH http://127.0.0.1:8000/api/v1/taxpayer/10/
+Content-Type: application/json
+
+{
+    "dni": 29285854
+}

@@ -2,6 +2,7 @@ from datetime import date
 from json import JSONDecodeError
 
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from .models import (Taxpayer,
                      Deceased,
                      State,
@@ -141,8 +142,13 @@ class TaxpayerViewset(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    def delete(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+    def destroy(self, request, pk=None):
+        print(pk)
+        instance = self.get_object()
+        instance.active = False
+        instance.save()
+        message = 'Contribuyente desactivado'
+        return Response({'message': 'Contribuyente desactivado'}, status=status.HTTP_200_OK)
 
 
 class DeceasedViewset(viewsets.ModelViewSet):
