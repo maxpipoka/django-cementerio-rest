@@ -20,7 +20,7 @@ DELETE http://127.0.0.1:8000/api/v1/taxpayer/2/
 
 ### Activate taxpayer
 
-PATCH http://127.0.0.1:8000/api/v1/taxpayer/10/
+PATCH http://127.0.0.1:8000/api/v1/taxpayer/1/
 Content-Type: application/json
 
 {

@@ -1,11 +1,8 @@
-from datetime import date
 from json import JSONDecodeError
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from .models import (Taxpayer,
-                     Deceased,
-                     State,
+from .models import (State,
                      County,
                      City,
                      RegistrationOffice,
@@ -18,9 +15,7 @@ from .models import (Taxpayer,
                      Payment)
 from rest_framework import viewsets, views, status
 from rest_framework import permissions
-from .serializers import (TaxpayerSerializer,
-                          DeceasedSerializer,
-                          StateSerializer,
+from .serializers import (StateSerializer,
                           CountySerializer,
                           CitySerializer,
                           RegistrationOfficeSerializer,
@@ -34,181 +29,19 @@ from .serializers import (TaxpayerSerializer,
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .utils.utils import (isValueExistInDb,
+                          isGreaterThanMaximumLength,
+                          isLessThanMinimumLength,
+                          isDateFuture,
+                          isDatePast)
 
 # VALIDATIONS
 
 
-def isValueExistInDb(modelToCheck, filter_to_arg=dict) -> bool:
-    """ Checks if a value exists in the database 
-    Args:
-        modelToCheck: The model to check
-        filter_to_arg: a dict with a key and value to check if exist in the DDBB
 
-    Returns:
-        A boolean indicating if the value exists in the DDBB
-    """
-
-    return modelToCheck.objects.filter(**filter_to_arg).exists()
-
-
-def isGreaterThanMaximumLength(length=int, toCheck=str) -> bool:
-    """Validate the contraint of maximun length of a value
-    Args:
-        length: a int value of a lengt to compare
-        toCheck: a string to evaluate its length
-
-    Returns:
-        A boolean indicating if string length is under de maximun
-
-    """
-
-
-def isLessThanMinimumLength(length=int, toCheck=str) -> bool:
-    """Validate the contraint of minimun length of a value
-
-    Args:
-        length: a int value of a lengt to compare
-        toCheck: a string to evaluate its length
-
-    Returns:
-        A boolean indicating if string length is up of the minimum
-
-    """
-
-    return len(toCheck) < length
-
-
-def isDateFuture(date_to_check=date) -> bool:
-    """Validate that a date is not future of today
-
-    Args:
-        date_to_check: a date value to compare with the today date
-
-    Returns:
-        A boolean indicating if the date is future of today
-    """
-
-    return date_to_check > (date.today().strftime("%d/%m/%Y"))
-
-
-def isDatePast(date_to_check=date) -> bool:
-    """Validate that a date is not today or the future
-
-    Args:
-        date_to_check: a date value to compare with the today date
-
-    Returns:
-        A boolean indicating if the date is future of today"""
-
-    return date_to_check > (date.today().strftime("%d/%m/%Y"))
 
 # Create your views here.
 
-
-class TaxpayerViewset(viewsets.ModelViewSet):
-    queryset = Taxpayer.objects.all()
-    serializer_class = TaxpayerSerializer
-
-    def create(self, request, *args, **kwargs):
-        # Lógica personalizada para el método POST (Crear)
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-
-            if isValueExistInDb(Taxpayer, {'dni': int(serializer.validated_data['dni'])}):
-                message = {'message': 'El dni ya se encuentra registrado'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-            if isValueExistInDb(Taxpayer, {'code': int(serializer.validated_data['code'])}):
-                message = {'message': 'El código ya se encuentra registrado'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-            if isLessThanMinimumLength(5, serializer.validated_data['name']):
-                message = {
-                    'message': 'El nombre no tiene al menos 5 caracteres'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-            if isLessThanMinimumLength(5, serializer.validated_data['address']):
-                message = {
-                    'message': 'El nombre no tiene al menos 5 caracteres'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-            if isLessThanMinimumLength(5, serializer.validated_data['city_address']):
-                message = {
-                    'message': 'El nombre no tiene al menos 5 caracteres'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    def destroy(self, request, pk=None):
-        print(pk)
-        instance = self.get_object()
-        instance.active = False
-        instance.save()
-        message = 'Contribuyente desactivado'
-        return Response({'message': 'Contribuyente desactivado'}, status=status.HTTP_200_OK)
-
-
-class DeceasedViewset(viewsets.ModelViewSet):
-    queryset = Deceased.objects.all()
-    serializer_class = DeceasedSerializer
-
-
-class StateViewset(viewsets.ModelViewSet):
-    queryset = State.objects.all()
-    serializer_class = StateSerializer
-
-
-class CountyViewset(viewsets.ModelViewSet):
-    queryset = County.objects.all()
-    serializer_class = CountySerializer
-
-
-class CityViewset(viewsets.ModelViewSet):
-    queryset = City.objects.all()
-    serializer_class = CitySerializer
-
-
-class RegistrationOfficeViewset(viewsets.ModelViewSet):
-    queryset = RegistrationOffice.objects.all()
-    serializer_class = RegistrationOfficeSerializer
-
-
-class BurialPermitViewset(viewsets.ModelViewSet):
-    queryset = BurialPermit.objects.all()
-    serializer_class = BurialPermitSerializer
-
-
-class SectorViewset(viewsets.ModelViewSet):
-    queryset = Sector.objects.all()
-    serializer_class = SectorSerializer
-
-
-class PeriodicityViewset(viewsets.ModelViewSet):
-    queryset = Periodicity.objects.all()
-    serializer_class = PeriodicitySerializer
-
-
-class ParcelViewset(viewsets.ModelViewSet):
-    queryset = Parcel.objects.all()
-    serializer_class = ParcelSerializer
-
-
-class GraveViewset(viewsets.ModelViewSet):
-    queryset = Grave.objects.all()
-    serializer_class = GraveSerializer
-
-
-class TaxViewset(viewsets.ModelViewSet):
-    queryset = Tax.objects.all()
-    serializer_class = TaxSerializer
-
-
-class PaymentViewset(viewsets.ModelViewSet):
-    queryset = Payment.objects.all()
-    serializer_class = PaymentSerializer
 
 # Start functional code
 # Endpoint to get all the Taxpayers

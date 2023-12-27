@@ -1,10 +1,6 @@
 from django.contrib import admin
 from .models import BurialPermit, City, County, Grave, Parcel, Payment, Periodicity, RegistrationOffice, Sector, State, Tax, Taxpayer, Deceased
-
-# Aux functions
-def format_date(obj):
-    if (obj != None and obj):
-        return obj.strftime("%d/%m/%Y %H:%M")
+from .utils.utils import format_date, format_date_with_time
 
 # Register your models here.
 
@@ -15,10 +11,10 @@ class TaxpayerAdmin(admin.ModelAdmin):
     readonly_fields = ['code', 'dni']
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -30,13 +26,13 @@ class DeceasedAdmin(admin.ModelAdmin):
     search_fields = ('deceased', 'is_child')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     def date_of_death_formated(self, obj):
-        return obj.date_of_death.strftime("%d/%m/%Y")
+        return format_date(obj.date_of_death)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -50,10 +46,10 @@ class StateAdmin(admin.ModelAdmin):
     search_fields = ('name', 'country')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -66,10 +62,10 @@ class CountyAdmin(admin.ModelAdmin):
     search_fields = ('name', 'state')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -81,10 +77,10 @@ class CityAdmin(admin.ModelAdmin):
     search_fields = ('name', 'county')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -96,10 +92,10 @@ class RegistrationOfficeAdmin(admin.ModelAdmin):
     search_fields = ('registration_office', 'registration_city')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -111,16 +107,16 @@ class BurialPermitAdmin(admin.ModelAdmin):
     search_fields = ('date_in_registration_office', 'deceased', 'presented_by', 'registration_office')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     def date_in_registration_office_formated(self, obj):
-        return obj.date_in_registration_office.strftime("%d/%m/%Y")
+        return format_date(obj.date_in_registration_office)
     
     def presentation_date_formated(self, obj):
-        return obj.presentation_date.strftime("%d/%m/%Y")
+        return format_date(obj.presentation_date)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -134,10 +130,10 @@ class SectorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'zone')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -149,10 +145,10 @@ class PeriodicityAdmin(admin.ModelAdmin):
     search_fields = ('name', 'years_amount')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -164,10 +160,10 @@ class ParcelAdmin(admin.ModelAdmin):
     search_fields = ('number', 'row', 'sector')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -179,10 +175,10 @@ class GraveAdmin(admin.ModelAdmin):
     search_fields = ('parcel', 'deceased')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -193,17 +189,16 @@ class TaxAdmin(admin.ModelAdmin):
     search_fields = ('name', 'zone', 'periodicity', 'amount', 'date_from', 'date_until')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     def date_from_formated(self, obj):
-        return obj.date_from.strftime("%d/%m/%Y")
+        return format_date(obj.date_from)
     
     def date_until_formated(self, obj):
-        if (obj.date_until != None and obj.date_until):
-            return obj.date_until.strftime("%d/%m/%Y")
+        return format_date(obj.date_until)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
@@ -217,13 +212,13 @@ class PaymentAdmin(admin.ModelAdmin):
     search_fields = ('receipt_number', 'payment_date', 'deceased', 'taxpayer')
 
     def createdAt_formated(self, obj):
-        return format_date(obj.createdAt)
+        return format_date_with_time(obj.createdAt)
     
     def updatedAt_formated(self, obj):
-        return format_date(obj.updatedAt)
+        return format_date_with_time(obj.updatedAt)
     
     def payment_date_formated(self, obj):
-        return obj.payment_date.strftime("%d/%m/%Y")
+        return format_date(obj.payment_date)
     
     createdAt_formated.short_description = 'Creado/a'
     updatedAt_formated.short_description = 'Mod.o/a'
