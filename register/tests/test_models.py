@@ -19,3 +19,5 @@ class TaxpayerTests(APITestCase):
     def test_taxpayer_list(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_OK_200)
+
+        

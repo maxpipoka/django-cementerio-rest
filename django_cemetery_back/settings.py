@@ -95,17 +95,17 @@ WSGI_APPLICATION = 'django_cemetery_back.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django_psdb_engine',
-        # 'NAME': env('DB_NAME'),
-        'NAME': os.environ.get('DB_NAME'),
-        # 'HOST': env('DB_HOST'),
-        'HOST': os.environ.get('DB_HOST'),
-        # 'PORT': env('DB_PORT'),
-        'PORT': os.environ.get('DB_PORT'),
-        # 'USER': env('DB_USER'),
-        'USER': os.environ.get('DB_USER'),
-        # 'PASSWORD': env('DB_PASSWORD'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        # 'ENGINE': 'ddd',
+        # # 'NAME': env('DB_NAME'),
+        # 'NAME': os.environ.get('DB_NAME'),
+        # # 'HOST': env('DB_HOST'),
+        # 'HOST': os.environ.get('DB_HOST'),
+        # # 'PORT': env('DB_PORT'),
+        # 'PORT': os.environ.get('DB_PORT'),
+        # # 'USER': env('DB_USER'),
+        # 'USER': os.environ.get('DB_USER'),
+        # # 'PASSWORD': env('DB_PASSWORD'),
+        # 'PASSWORD': os.environ.get('DB_PASSWORD'),
         # 'OPTIONS': {
         #     'charset': 'utf8mb4',
         #     'ssl': {
@@ -113,13 +113,9 @@ DATABASES = {
         #         'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')
         #     }}
     },
-    'test': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
 }
 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'] = dj_database_url.config(default=os.environ.get('DATABASE_URL') , conn_max_age=600, ssl_require=True, test_options={'NAME': 'mytestdatabase'})
 DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
 del DATABASES['default']['OPTIONS']['sslmode'] 
 DATABASES['default']['OPTIONS']['ssl'] =  {'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
