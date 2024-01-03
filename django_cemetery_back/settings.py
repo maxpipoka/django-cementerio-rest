@@ -112,6 +112,10 @@ DATABASES = {
         #         # 'ssl-ca': env('MYSQL_ATTR_SSL_CA')
         #         'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')
         #     }}
+    },
+    'test': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
