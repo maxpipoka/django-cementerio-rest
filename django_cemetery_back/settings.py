@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import environ
 import os
+import sys
 from pathlib import Path
 import dj_database_url
 
@@ -120,6 +121,12 @@ DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
 del DATABASES['default']['OPTIONS']['sslmode'] 
 DATABASES['default']['OPTIONS']['ssl'] =  {'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
+
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
