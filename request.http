@@ -14,6 +14,18 @@ Content-Type: application/json
     "city_address":"SAN JOSE, MISIONES"
 }
 
+### Crear un nuevo Contribuyente con codigo en el dni
+POST http://127.0.0.1:8000/api/v1/taxpayer/
+Content-Type: application/json
+
+{
+    "code":29285857,
+    "dni": "nd",
+    "name":"xx",
+    "address":"La esquina de la casa de Martin",
+    "city_address":"SAN JOSE, MISIONES"
+}
+
 ### Delete 'deactive' taxpayer
 
 DELETE http://127.0.0.1:8000/api/v1/taxpayer/2/
