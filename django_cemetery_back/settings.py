@@ -116,11 +116,24 @@ DATABASES = {
     },
 }
 
-DATABASES['default'] = dj_database_url.config(default=os.environ.get('DATABASE_URL') , conn_max_age=600, ssl_require=True, test_options={'NAME': 'mytestdatabase'})
-DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
-del DATABASES['default']['OPTIONS']['sslmode'] 
-DATABASES['default']['OPTIONS']['ssl'] =  {'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': os.environ.get('PGDATABASE'),
+    'USER': os.environ.get('PGUSER'),
+    'PASSWORD': os.environ.get('PGPASSWORD'),
+    'HOST': os.environ.get('PGHOST'),
+    'PORT': os.environ.get('PGPORT', 5432),
+    'OPTIONS': {
+      'sslmode': 'require',
+    },
+  }
+}
 
+# DATABASES['default'] = dj_database_url.config(default=os.environ.get('DATABASE_URL') , conn_max_age=600, ssl_require=True, test_options={'NAME': 'mytestdatabase'})
+# DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
+# del DATABASES['default']['OPTIONS']['sslmode'] 
+# DATABASES['default']['OPTIONS']['ssl'] =  {'ssl-ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
 if 'test' in sys.argv:
     DATABASES['default'] = {
@@ -174,4 +187,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
 }
