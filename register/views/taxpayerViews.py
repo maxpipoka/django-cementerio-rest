@@ -18,9 +18,10 @@ class TaxpayerViewset(viewsets.ModelViewSet):
 
         if serializer.is_valid():
 
-            if isValueExistInDb(Taxpayer, {'dni': int(serializer.validated_data['dni'])}):
-                message = {'message': 'El dni ya se encuentra registrado'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            if serializer.validated_data['dni'] != 'sd':
+                if isValueExistInDb(Taxpayer, {'dni': int(serializer.validated_data['dni'])}):
+                    message = {'message': 'El dni ya se encuentra registrado'}
+                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
             if isValueExistInDb(Taxpayer, {'code': int(serializer.validated_data['code'])}):
                 message = {'message': 'El código ya se encuentra registrado'}

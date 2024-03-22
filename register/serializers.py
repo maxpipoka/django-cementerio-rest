@@ -3,10 +3,54 @@ from rest_framework import serializers
 from .models import BurialPermit, City, County, State, Deceased, Grave, Parcel, Payment, Periodicity, RegistrationOffice, Sector, Tax, Taxpayer
 
 
-class TaxpayerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Taxpayer
-        fields = '__all__'
+# class TaxpayerSerializer(serializers.ModelSerializer):
+    
+#     class Meta:
+#         model = Taxpayer
+#         fields = '__all__'
+
+class TaxpayerSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    code = serializers.IntegerField(required=True)
+    name = serializers.CharField(max_length=100, required=True)
+    dni = serializers.CharField()
+
+    address = serializers.CharField(max_length=150, required=True)
+    city_address = serializers.CharField(max_length=50, required=True)
+    createdAt = serializers.DateTimeField(read_only=True)
+    updatedAt = serializers.DateTimeField(read_only=True)
+    active = serializers.BooleanField(default=True)
+
+    def validate_dni(self, value):
+        # Realiza la validación personalizada para el campo 'dni'
+        if value.lower() == 'sd':
+            return value  # Permitir 'sd' como un caso especial
+
+        # Si no es 'sd', intenta convertir a entero y verifica si es un número válido
+        try:
+            int_value = int(value)
+        except ValueError:
+            raise serializers.ValidationError('El campo "dni" debe ser un número entero o la cadena "sd".')
+
+        return int_value
+
+    def create(self, validated_data):
+        # Si el valor del campo 'dni' es 'sd', asignamos None al campo dni
+        if validated_data['dni'].lower() == 'sd':
+            validated_data['dni'] = None
+
+        return Taxpayer.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        # Implementa el método update si es necesario
+        instance.code = validated_data.get('code', instance.code)
+        instance.name = validated_data.get('name', instance.name)
+        instance.dni = validated_data.get('dni', instance.dni)
+        instance.address = validated_data.get('address', instance.address)
+        instance.city_address = validated_data.get('city_address', instance.city_address)
+        instance.active = validated_data.get('active', instance.active)
+        instance.save()
+        return instance
 
 
 class DeceasedSerializer(serializers.ModelSerializer):

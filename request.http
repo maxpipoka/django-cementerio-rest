@@ -7,9 +7,9 @@ POST http://127.0.0.1:8000/api/v1/taxpayer/
 Content-Type: application/json
 
 {
-    "code":29285856,
-    "dni": 29285856,
-    "name":"xx",
+    "code":1,
+    "dni": "sd",
+    "name":"xxxxx",
     "address":"La esquina de la casa de Martin",
     "city_address":"SAN JOSE, MISIONES"
 }
