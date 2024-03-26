@@ -23,7 +23,8 @@ class TaxpayerSerializer(serializers.Serializer):
 
     def validate_dni(self, value):
         # Realiza la validación personalizada para el campo 'dni'
-        if value.lower() == 'sd':
+        if isinstance(value, str) and value.lower() == 'sd':
+            print('Es string --------------------------------------------')
             return value  # Permitir 'sd' como un caso especial
 
         # Si no es 'sd', intenta convertir a entero y verifica si es un número válido
@@ -37,7 +38,7 @@ class TaxpayerSerializer(serializers.Serializer):
     def create(self, validated_data):
         # Si el valor del campo 'dni' es 'sd', asignamos None al campo dni
         if validated_data['dni'].lower() == 'sd':
-            validated_data['dni'] = None
+            validated_data['dni'] = 0
 
         return Taxpayer.objects.create(**validated_data)
 

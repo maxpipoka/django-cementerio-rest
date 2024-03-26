@@ -22,13 +22,16 @@ class TaxpayerViewset(viewsets.ModelViewSet):
                 if isValueExistInDb(Taxpayer, {'dni': int(serializer.validated_data['dni'])}):
                     message = {'message': 'El dni ya se encuentra registrado'}
                     return Response(message, status=status.HTTP_400_BAD_REQUEST)
+                
+                if isGreaterThanMaximumLength(8, (serializer.validated_data['dni'])):
+                    message = {'message': 'El dni puede tener 8 caracteres como máximo'}
+                    return Response(message, status=status.HTTP_400_BAD_REQUEST)
+                
+            # if serializer.validated_data['dni'] == 'sd':
+            #     serializer.validated_data['dni'] = 0
 
             if isValueExistInDb(Taxpayer, {'code': int(serializer.validated_data['code'])}):
                 message = {'message': 'El código ya se encuentra registrado'}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            
-            if isGreaterThanMaximumLength(8, (serializer.validated_data['dni'])):
-                message = {'message': 'El dni puede tener 8 caracteres como máximo'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
             if isLessThanMinimumLength(5, serializer.validated_data['name']):
